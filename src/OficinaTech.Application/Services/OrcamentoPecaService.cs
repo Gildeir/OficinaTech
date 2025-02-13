@@ -17,7 +17,7 @@ namespace OficinaTech.Application.Services
             _pecaRepository = pecaRepository;
         }
 
-        public async Task<bool> AddPecaToOrcamentoAsync(int orcamentoId, int pecaId, int quantidade)
+        public async Task<bool> AddPecaToOrcamentoAsync(int orcamentoId, int pecaId, int quantidadeSolicitada)
         {
             var peca = await _pecaRepository.GetByIdAsync(pecaId);
             if (peca == null) return false;
@@ -25,17 +25,18 @@ namespace OficinaTech.Application.Services
             var orcamentoPecaExistente = await _orcamentoPecaRepository.GetByOrcamentoAndPecaAsync(orcamentoId, pecaId);
             if (orcamentoPecaExistente != null)
             {
-                orcamentoPecaExistente.Quantidade += quantidade;
+                // Evita duplicidade na criação de orçamento
+                orcamentoPecaExistente.Quantidade += quantidadeSolicitada;
                 return await _orcamentoPecaRepository.UpdateAsync(orcamentoPecaExistente);
             }
 
-            bool liberadaParaCompra = quantidade > peca.Estoque;
+            bool liberadaParaCompra = quantidadeSolicitada > peca.Estoque;
 
             var orcamentoPeca = new OrcamentoPeca
             {
                 OrcamentoId = orcamentoId,
                 PecaId = pecaId,
-                Quantidade = quantidade,
+                Quantidade = quantidadeSolicitada,
                 LiberadaParaCompra = liberadaParaCompra,
                 Status = EEstadoPecaOrcamento.EmEspera
             };
@@ -53,6 +54,29 @@ namespace OficinaTech.Application.Services
                 await _orcamentoPecaRepository.UpdateAsync(item);
             }
         }
+
+        public async Task<bool> EntregarPecaAsync(int orcamentoId, int pecaId)
+        {
+            var orcamentoPeca = await _orcamentoPecaRepository.GetByOrcamentoAndPecaAsync(orcamentoId, pecaId);
+            if (orcamentoPeca == null) return false; // A peça não foi encontrada no orçamento
+
+            var peca = await _pecaRepository.GetByIdAsync(pecaId);
+            if (peca == null) return false; // A peça não existe no cadastro
+
+            // Verifica se há estoque suficiente para entrega
+            if (peca.Estoque < orcamentoPeca.Quantidade) return false;
+
+            // Atualiza o estoque da peça
+            peca.Estoque -= orcamentoPeca.Quantidade;
+
+            // Atualiza o status da peça no orçamento para entregue
+            orcamentoPeca.Status = EEstadoPecaOrcamento.Entregue;
+
+            // Salva as alterações no banco
+            await _pecaRepository.UpdateAsync(peca);
+            return await _orcamentoPecaRepository.UpdateAsync(orcamentoPeca);
+        }
+
 
     }
 }

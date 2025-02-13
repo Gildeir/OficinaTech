@@ -63,13 +63,15 @@ namespace OficinaTech.API.Controllers
             return NoContent();
         }
 
-        [HttpPost("{id}/comprar")]
+        [HttpPost("{id}/comprar-repor-estoque")]
         public async Task<IActionResult> ComprarPeca(int id, [FromBody] ComprarPecaDto dto)
         {
             if (dto == null || dto.Quantidade <= 0 || dto.PrecoCusto <= 0)
                 return BadRequest("Dados da compra inválidos.");
 
-            var success = await _pecaService.ComprarPecaAsync(id, dto.Quantidade, dto.PrecoCusto);
+           var statusPeca = _pecaService.GetPecaByIdAsync(id).Result;
+
+           var success = await _pecaService.ComprarPecaAsync(id, dto.Quantidade, dto.PrecoCusto);
 
             if (!success)
                 return NotFound("Peça não encontrada.");
