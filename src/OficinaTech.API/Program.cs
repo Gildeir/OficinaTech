@@ -5,6 +5,8 @@ using OficinaTech.Infrastructure.Repositories;
 using OficinaTech.Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using OficinaTech.Infrastructure.Data.Context;
+using OficinaTech.Domain.Interfaces;
+using OficinaTech.Infrastructure.ExternalServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +51,8 @@ builder.Services.AddControllers()
 
 
 
+builder.Services.AddHttpClient<ViaCepService>();
+builder.Services.AddScoped<IViaCepService, ViaCepService>();
 
 
 builder.Services.AddScoped<IOrcamentoService, OrcamentoService>();
