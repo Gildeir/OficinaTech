@@ -1,4 +1,5 @@
-﻿using OficinaTech.Domain.Enum;
+﻿using System.Text.Json.Serialization;
+using OficinaTech.Domain.Enum;
 
 namespace OficinaTech.Domain.Entities
 {
@@ -6,6 +7,8 @@ namespace OficinaTech.Domain.Entities
     {
         public int Id { get; set; }
         public int OrcamentoId { get; set; }
+
+        [JsonIgnore]
         public Orcamento Orcamento { get; set; }
         public int PecaId { get; set; }
         public Peca Peca { get; set; }

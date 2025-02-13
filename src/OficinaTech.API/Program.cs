@@ -40,11 +40,25 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.WriteIndented = true;
+    });
+
+
+
+
+
 builder.Services.AddScoped<IOrcamentoService, OrcamentoService>();
 builder.Services.AddScoped<IOrcamentoRepository, OrcamentoRepository>();
 
 builder.Services.AddScoped<IPecaRepository, PecaRepository>();
 builder.Services.AddScoped<IPecaService, PecaService>();
+
+builder.Services.AddScoped<IOrcamentoPecaService, OrcamentoPecaService>();
+builder.Services.AddScoped<IOrcamentoPecaRepository, OrcamentoPecaRepository>();
 
 builder.Services.AddControllers();
 
