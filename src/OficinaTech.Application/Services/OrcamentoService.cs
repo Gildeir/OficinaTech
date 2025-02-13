@@ -38,19 +38,7 @@ namespace OficinaTech.Application.Services
             return orcamento;
         }
 
-        //public async Task<bool> AddPecaToOrcamentoAsync(int orcamentoId, int pecaId, int quantidade)
-        //{
-        //    var orcamentoPeca = new OrcamentoPeca
-        //    {
-        //        OrcamentoId = orcamentoId,
-        //        PecaId = pecaId,
-        //        Quantidade = quantidade,
-        //        LiberadaParaCompra = false
-        //    };
 
-        //    return await _orcamentoPecaRepository.AddAsync(orcamentoPeca);
-
-        //}
     }
 
 }

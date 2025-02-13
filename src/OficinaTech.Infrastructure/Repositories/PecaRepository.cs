@@ -26,9 +26,9 @@ namespace OficinaTech.Infrastructure.Repositories
         }
 
 
-        public Task<Peca> GetByIdAsync(int id)
+        public async Task<Peca> GetByIdAsync(int id)
         {
-            var result = _context.Pecas.FirstOrDefaultAsync(x => x.Id == id);
+            var result = await _context.Pecas.FirstOrDefaultAsync(x => x.Id == id);
 
             return result;
         }

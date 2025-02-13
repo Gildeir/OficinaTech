@@ -25,7 +25,6 @@ namespace OficinaTech.Application.Services
             var orcamentoPecaExistente = await _orcamentoPecaRepository.GetByOrcamentoAndPecaAsync(orcamentoId, pecaId);
             if (orcamentoPecaExistente != null)
             {
-                // Apenas atualiza a quantidade, sem adicionar um novo item
                 orcamentoPecaExistente.Quantidade += quantidade;
                 return await _orcamentoPecaRepository.UpdateAsync(orcamentoPecaExistente);
             }
@@ -43,6 +42,18 @@ namespace OficinaTech.Application.Services
 
             return await _orcamentoPecaRepository.AddAsync(orcamentoPeca);
         }
+
+        public async Task UpdatePrecoEmOrcamentos(int pecaId, decimal novoPreco)
+        {
+            var orcamentoPecas = await _orcamentoPecaRepository.GetByPecaIdAsync(pecaId);
+
+            foreach (var item in orcamentoPecas)
+            {
+                item.Peca.Preco = novoPreco;
+                await _orcamentoPecaRepository.UpdateAsync(item);
+            }
+        }
+
     }
 }
 
