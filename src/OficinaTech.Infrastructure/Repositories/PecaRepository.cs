@@ -17,6 +17,7 @@ namespace OficinaTech.Infrastructure.Repositories
         public async Task<List<Peca>> GetAllAsync()
         {
             return await _context.Pecas.ToListAsync();
+
         }
         public async Task<bool> AddAsync(Peca peca)
         {
