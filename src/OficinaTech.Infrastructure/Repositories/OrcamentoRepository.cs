@@ -14,26 +14,36 @@ namespace OficinaTech.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<List<Orcamento>> ObterTodosAsync()
+        public async Task<List<Orcamento>> GetAllAsync()
         {
-            return await _context.Orcamentos.Include(o => o.OrcamentoPecas).ToListAsync();
-        }
-        public async Task<Orcamento> ObterPorIdAsync(int id)
-        {
-            return await _context.Orcamentos
+            var result = await _context.Orcamentos
                 .Include(o => o.OrcamentoPecas)
-                .FirstOrDefaultAsync(o => o.Id == id) ?? new Orcamento();
+                .ThenInclude(op => op.Peca).AsNoTracking().ToListAsync();
+
+            return result;
+
         }
-        public async Task AdicionarAsync(Orcamento orcamento)
+        public async Task<Orcamento> GetByIdAsync(int id)
+        {
+            var result = await _context.Orcamentos
+                .Include(o => o.OrcamentoPecas)
+                .ThenInclude(op => op.Peca).AsNoTracking()
+                .FirstOrDefaultAsync(o => o.Id == id) ?? new();
+
+            return result;
+        }
+        public async Task<bool> AddAsync(Orcamento orcamento)
         {
             await _context.Orcamentos.AddAsync(orcamento);
-            await _context.SaveChangesAsync();
+
+            return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task AtualizarAsync(Orcamento orcamento)
+        public async Task<bool> UpdateAsync(Orcamento orcamento)
         {
             _context.Orcamentos.Update(orcamento);
-            await _context.SaveChangesAsync();
+
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 

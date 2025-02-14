@@ -9,10 +9,10 @@ namespace OficinaTech.Infrastructure.Repositories.Interfaces
 {
     public interface IOrcamentoRepository
     {
-        Task AdicionarAsync(Orcamento orcamento);
-        Task<List<Orcamento>> ObterTodosAsync();
-        Task<Orcamento> ObterPorIdAsync(int id);
-        Task AtualizarAsync(Orcamento orcamento);
+        Task<bool> AddAsync(Orcamento orcamento);
+        Task<List<Orcamento>> GetAllAsync();
+        Task<Orcamento> GetByIdAsync(int id);
+        Task<bool> UpdateAsync(Orcamento orcamento);
     }
 
 }

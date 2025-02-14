@@ -9,40 +9,56 @@ namespace OficinaTech.API.Controllers
     public class OrcamentoController : ControllerBase
     {
         private readonly IOrcamentoService _orcamentoService;
+        private readonly IOrcamentoPecaService _orcamentoPecaService;
 
-        public OrcamentoController(IOrcamentoService orcamentoService)
+
+        public OrcamentoController(IOrcamentoService orcamentoService, IOrcamentoPecaService orcamentoPecaService)
         {
             _orcamentoService = orcamentoService;
+            _orcamentoPecaService = orcamentoPecaService;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllOrcamentos()
+        {
+            return Ok(await _orcamentoService.GetAllOrcamentosAsync());
         }
 
         [HttpPost]
         public async Task<IActionResult> CriarOrcamento([FromBody] CriarOrcamentoDto dto)
         {
-            var orcamento = await _orcamentoService.CriarOrcamentoAsync(dto.Numero, dto.Placa, dto.Cliente);
-            return CreatedAtAction(nameof(ObterOrcamentoPorId), new { id = orcamento.Id }, orcamento);
-        }
+            var orcamento = await _orcamentoService.CreateOrcamentoAsync(dto.Numero, dto.Placa, dto.Cliente);
 
-        [HttpGet]
-        public async Task<IActionResult> ObterTodos()
-        {
-            return Ok(await _orcamentoService.ObterTodosOrcamentosAsync());
+            return CreatedAtAction(nameof(GetOrcamentoById), new { id = orcamento.Id }, orcamento);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> ObterOrcamentoPorId(int id)
+        public async Task<IActionResult> GetOrcamentoById(int id)
         {
-            var orcamento = await _orcamentoService.ObterOrcamentoPorIdAsync(id);
+            var orcamento = await _orcamentoService.GetOrcamentoByIdAsync(id);
+
             if (orcamento == null) return NotFound();
+
             return Ok(orcamento);
+
+
         }
 
+
         [HttpPost("{orcamentoId}/adicionar-peca")]
-        public async Task<IActionResult> AdicionarPeca(int orcamentoId, [FromBody] AdicionarPecaDto dto)
+        public async Task<IActionResult> AddPeca(int orcamentoId, [FromBody] AdicionarPecaDto dto)
         {
-            var sucesso = await _orcamentoService.AdicionarPecaAoOrcamentoAsync(orcamentoId, dto.PecaId, dto.Quantidade);
-            if (!sucesso) return BadRequest("Orçamento ou peça não encontrados.");
+            if (dto == null)
+                return BadRequest("Os dados da peça não podem ser nulos.");
+
+            var success = await _orcamentoPecaService.AddPecaToOrcamentoAsync(orcamentoId, dto.PecaId, dto.Quantidade);
+
+            if (!success)
+                return NotFound("Orçamento ou peça não encontrados.");
+
             return NoContent();
         }
+
     }
 
 }

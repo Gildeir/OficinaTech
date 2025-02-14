@@ -1,6 +1,5 @@
 ﻿using OficinaTech.Application.Interfaces;
 using OficinaTech.Domain.Entities;
-using OficinaTech.Infrastructure.Repositories;
 using OficinaTech.Infrastructure.Repositories.Interfaces;
 
 namespace OficinaTech.Application.Services
@@ -24,13 +23,13 @@ namespace OficinaTech.Application.Services
 
         public async Task<bool> AddPecaAsync(Peca peca)
         {
-           return await _pecaRepository.AddAsync(peca);
+            return await _pecaRepository.AddAsync(peca);
         }
 
         public async Task<bool> UpdatePecaAsync(Peca peca)
         {
             return await _pecaRepository.UpdateAsync(peca);
-        } 
+        }
         public async Task<bool> DeletePecaAsync(int id)
         {
             return await _pecaRepository.DeleteAsync(id);
