@@ -30,6 +30,11 @@ namespace OficinaTech.Infrastructure.Data.Configuration
                    .WithOne(op => op.Peca)
                    .HasForeignKey(op => op.PecaId)
                    .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasMany(p => p.MovimentacoesEstoque)
+                   .WithOne(m => m.Peca)
+                   .HasForeignKey(m => m.PecaId)
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

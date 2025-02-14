@@ -1,5 +1,7 @@
 ﻿using OficinaTech.Application.Interfaces;
 using OficinaTech.Domain.Entities;
+using OficinaTech.Domain.Enum;
+using OficinaTech.Infrastructure.Repositories;
 using OficinaTech.Infrastructure.Repositories.Interfaces;
 
 namespace OficinaTech.Application.Services
@@ -8,10 +10,12 @@ namespace OficinaTech.Application.Services
     {
         private readonly IPecaRepository _pecaRepository;
         private readonly IOrcamentoPecaService _orcamentopecaService;
-        public PecaService(IPecaRepository pecaRepository, IOrcamentoPecaService orcamentoPecaService)
+        private readonly IMovimentacaoEstoqueRepository _movimentacaoEstoqueRepository;
+        public PecaService(IPecaRepository pecaRepository, IOrcamentoPecaService orcamentoPecaService, IMovimentacaoEstoqueRepository movimentacaoEstoqueRepository)
         {
             _pecaRepository = pecaRepository;
             _orcamentopecaService = orcamentoPecaService;
+            _movimentacaoEstoqueRepository = movimentacaoEstoqueRepository;
         }
         public async Task<List<Peca>> GetAllPecasAsync()
         {
@@ -52,7 +56,16 @@ namespace OficinaTech.Application.Services
                 await _orcamentopecaService.UpdatePrecoEmOrcamentos(pecaId, precoCusto);
             }
 
-            return await _pecaRepository.UpdateAsync(peca);
+            await _pecaRepository.UpdateAsync(peca);
+
+            var movimentacao = new MovimentacaoEstoque
+            {
+                PecaId = pecaId,
+                Quantidade = quantidadeReposicao,
+                Tipo = ETipoMovimentacao.Entrada
+            };
+
+            return await _movimentacaoEstoqueRepository.RegistrarMovimentacaoAsync(movimentacao);
         }
 
     }

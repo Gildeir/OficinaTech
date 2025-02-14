@@ -12,6 +12,8 @@ namespace OficinaTech.Domain.Entities
         [JsonIgnore]
         public List<OrcamentoPeca> OrcamentoPecas { get; set; } = new List<OrcamentoPeca>();
 
+        public List<MovimentacaoEstoque> MovimentacoesEstoque { get; set; } = new List<MovimentacaoEstoque>();
+
     }
 
 }

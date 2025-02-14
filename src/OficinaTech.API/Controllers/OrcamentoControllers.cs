@@ -62,7 +62,7 @@ namespace OficinaTech.API.Controllers
         [HttpPost("{orcamentoId}/entregar-peca/{pecaId}")]
         public async Task<IActionResult> EntregarPeca(int orcamentoId, int pecaId)
         {
-            var success = await _orcamentoPecaService.EntregarPecaAsync(orcamentoId, pecaId);
+            var success = await _orcamentoPecaService.UsarPecaNoOrcamento(orcamentoId, pecaId);
 
             if (!success) return BadRequest("Não foi possível entregar a peça. Verifique se há estoque suficiente.");
 

@@ -10,11 +10,13 @@ namespace OficinaTech.Application.Services
     {
         private readonly IOrcamentoPecaRepository _orcamentoPecaRepository;
         private readonly IPecaRepository _pecaRepository;
+        private readonly IMovimentacaoEstoqueRepository _movimentacaoEstoqueRepository;
 
-        public OrcamentoPecaService(IOrcamentoPecaRepository orcamentoPecaRepository, IPecaRepository pecaRepository)
+        public OrcamentoPecaService(IOrcamentoPecaRepository orcamentoPecaRepository, IPecaRepository pecaRepository, IMovimentacaoEstoqueRepository movimentacaoEstoqueRepository)
         {
             _orcamentoPecaRepository = orcamentoPecaRepository;
             _pecaRepository = pecaRepository;
+            _movimentacaoEstoqueRepository = movimentacaoEstoqueRepository;
         }
 
         public async Task<bool> AddPecaToOrcamentoAsync(int orcamentoId, int pecaId, int quantidadeSolicitada)
@@ -55,26 +57,36 @@ namespace OficinaTech.Application.Services
             }
         }
 
-        public async Task<bool> EntregarPecaAsync(int orcamentoId, int pecaId)
+        public async Task<bool> UsarPecaNoOrcamento(int orcamentoId, int pecaId)
         {
             var orcamentoPeca = await _orcamentoPecaRepository.GetByOrcamentoAndPecaAsync(orcamentoId, pecaId);
-            if (orcamentoPeca == null) return false; // A peça não foi encontrada no orçamento
+            if (orcamentoPeca == null) return false;
 
             var peca = await _pecaRepository.GetByIdAsync(pecaId);
-            if (peca == null) return false; // A peça não existe no cadastro
+            if (peca == null) return false;
 
-            // Verifica se há estoque suficiente para entrega
+            
             if (peca.Estoque < orcamentoPeca.Quantidade) return false;
 
-            // Atualiza o estoque da peça
+            
             peca.Estoque -= orcamentoPeca.Quantidade;
 
-            // Atualiza o status da peça no orçamento para entregue
+            
             orcamentoPeca.Status = EEstadoPecaOrcamento.Entregue;
 
-            // Salva as alterações no banco
+            
             await _pecaRepository.UpdateAsync(peca);
-            return await _orcamentoPecaRepository.UpdateAsync(orcamentoPeca);
+
+            await _orcamentoPecaRepository.UpdateAsync(orcamentoPeca);
+
+            var movimentacao = new MovimentacaoEstoque
+            {
+                PecaId = pecaId,
+                Quantidade = orcamentoPeca.Quantidade,
+                Tipo = ETipoMovimentacao.Saida
+            };
+
+            return await _movimentacaoEstoqueRepository.RegistrarMovimentacaoAsync(movimentacao);
         }
 
 
