@@ -2,6 +2,7 @@
 using OficinaTech.Application.DTOs.OficinaTech.Application.DTOs;
 using OficinaTech.Application.Interfaces;
 using OficinaTech.Domain.Entities;
+using OficinaTech.Infrastructure.Repositories.Interfaces;
 
 namespace OficinaTech.API.Controllers
 {
@@ -10,7 +11,7 @@ namespace OficinaTech.API.Controllers
     public class PecaController : ControllerBase
     {
         private readonly IPecaService _pecaService;
-        public PecaController(IPecaService pecaService)
+        public PecaController(IPecaService pecaService, IMovimentacaoEstoqueService movimentacaoEstoqueService)
         {
             _pecaService = pecaService;
         }

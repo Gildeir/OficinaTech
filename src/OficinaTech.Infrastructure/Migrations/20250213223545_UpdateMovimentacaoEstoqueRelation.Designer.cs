@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using OficinaTech.Infrastructure.Data.Context;
@@ -11,9 +12,11 @@ using OficinaTech.Infrastructure.Data.Context;
 namespace OficinaTech.Infrastructure.Migrations
 {
     [DbContext(typeof(OficinaTechDbContext))]
-    partial class OficinaTechDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250213223545_UpdateMovimentacaoEstoqueRelation")]
+    partial class UpdateMovimentacaoEstoqueRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

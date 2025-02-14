@@ -64,6 +64,10 @@ builder.Services.AddScoped<IPecaService, PecaService>();
 builder.Services.AddScoped<IOrcamentoPecaService, OrcamentoPecaService>();
 builder.Services.AddScoped<IOrcamentoPecaRepository, OrcamentoPecaRepository>();
 
+builder.Services.AddScoped<IMovimentacaoEstoqueRepository, MovimentacaoEstoqueRepository>();
+builder.Services.AddScoped<IMovimentacaoEstoqueService, MovimentacaoEstoqueService>();
+
+
 builder.Services.AddControllers();
 
 builder.Services.AddCors(options =>
