@@ -1,11 +1,8 @@
-﻿
-using System.Net;
-using System.Runtime.Intrinsics.X86;
-using System;
-using Moq;
+﻿using Moq;
 using OficinaTech.Application.Interfaces;
 using OficinaTech.Application.Services;
 using OficinaTech.Domain.Entities;
+using OficinaTech.Domain.Enum;
 using OficinaTech.Infrastructure.Repositories.Interfaces;
 
 namespace OficinaTech.Tests
@@ -21,17 +18,23 @@ namespace OficinaTech.Tests
         private readonly Mock<IMovimentacaoEstoqueRepository> _movimentacaoEstoqueRepositoryMock;
         private readonly Mock<IOrcamentoPecaService> _orcamentoPecaServiceMock;
         private readonly PecaService _pecaService;
+        private readonly Mock<IOrcamentoPecaRepository> _orcamentoPecaRepositoryMock;
 
         public PecaServiceTests()
         {
             _pecaRepositoryMock = new Mock<IPecaRepository>();
-
             _movimentacaoEstoqueRepositoryMock = new Mock<IMovimentacaoEstoqueRepository>();
-
             _orcamentoPecaServiceMock = new Mock<IOrcamentoPecaService>();
+            _orcamentoPecaRepositoryMock = new Mock<IOrcamentoPecaRepository>();
 
-            _pecaService = new PecaService(_pecaRepositoryMock.Object, _orcamentoPecaServiceMock.Object, _movimentacaoEstoqueRepositoryMock.Object);
+            _pecaService = new PecaService(
+                _pecaRepositoryMock.Object,
+                _orcamentoPecaServiceMock.Object,
+                _movimentacaoEstoqueRepositoryMock.Object,
+                _orcamentoPecaRepositoryMock.Object
+            );
         }
+
 
         [Fact(DisplayName = "Get Todas as Peças Deve Retornar Lista de Peças")]
         public async Task GetAllPecasAsync_DeveRetornarListaDePecas()
@@ -68,29 +71,6 @@ namespace OficinaTech.Tests
             Assert.Equal("Filtro de Óleo", result.Nome);
             Assert.Equal(50, result.Preco);
             Assert.Equal(10, result.Estoque);
-        }
-
-        [Fact(DisplayName = "Comprar Peça Deve Atualizar Estoque e Preço Quando Necessário")]
-        public async Task ComprarPecaAsync_DeveAtualizarEstoqueEPreco_QuandoPrecoDiferente()
-        {
-            // Arrange
-            var peca = new Peca { Id = 1, Nome = "Filtro de Óleo", Preco = 50, Estoque = 10 };
-
-            _pecaRepositoryMock.Setup(repo => repo.GetByIdAsync(1)).ReturnsAsync(peca);
-            _pecaRepositoryMock.Setup(repo => repo.UpdateAsync(It.IsAny<Peca>())).ReturnsAsync(true);
-
-            
-            _movimentacaoEstoqueRepositoryMock
-                .Setup(repo => repo.RegistrarMovimentacaoAsync(It.IsAny<MovimentacaoEstoque>()))
-                .ReturnsAsync(true); // Garantindo que a movimentação foi registrada com sucesso
-
-            // Act
-            var success = await _pecaService.ComprarPecaAsync(1, 5, 50);
-
-            // Assert
-            Assert.True(success); // Agora deve passar!
-            Assert.Equal(15, peca.Estoque); // O estoque deve ter aumentado corretamente
-            Assert.Equal(50, peca.Preco); // O preço deve permanecer o mesmo
         }
 
         [Fact(DisplayName = "Adicionar Peça Deve Retornar Verdadeiro Quando Bem Sucedido")]

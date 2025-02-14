@@ -61,7 +61,7 @@ namespace OficinaTech.API.Controllers
 
             if (!result) return NotFound("Peça não encontrada para exclusão.");
             
-            return NoContent();
+            return Ok("Peça deletada");
         }
 
         [HttpPost("{id}/comprar-repor-estoque")]
@@ -77,7 +77,7 @@ namespace OficinaTech.API.Controllers
             if (!success)
                 return NotFound("Peça não encontrada.");
 
-            return NoContent(); // TODO Melhoras os retornos NoContent()
+            return Ok("Compra realizada com sucesso");
         }
 
         [HttpGet("testar-erro")]
