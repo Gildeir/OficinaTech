@@ -1,11 +1,10 @@
-﻿
-services:
+﻿services:
   postgres:
     image: postgres:17
     container_name: postgres_db
     restart: always
     env_file:
-        .env
+      - .env
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -15,7 +14,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin -d oficina_db"]
+      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
       interval: 5s
       retries: 5
 
@@ -24,13 +23,16 @@ services:
     build:
       context: .
       dockerfile: src/OficinaTech.API/Dockerfile
+    restart: always
     depends_on:
       postgres:
         condition: service_healthy
     environment:
-      ConnectionStrings__DefaultConnection: ${DATABASE_URL}
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}"
     ports:
       - "8080:80"
+    entrypoint: >
+      sh -c "dotnet ef database update --project src/OficinaTech.Infrastructure/OficinaTech.Infrastructure.csproj --startup-project src/OficinaTech.API/OficinaTech.API.csproj && dotnet OficinaTech.API.dll"
 
 volumes:
   postgres_data:
