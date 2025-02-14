@@ -13,6 +13,7 @@ namespace OficinaTech.Infrastructure.Repositories.Interfaces
         Task<List<Orcamento>> GetAllAsync();
         Task<Orcamento> GetByIdAsync(int id);
         Task<bool> UpdateAsync(Orcamento orcamento);
+        Task<bool> DeleteOrcamentoAsync(int id);
     }
 
 }

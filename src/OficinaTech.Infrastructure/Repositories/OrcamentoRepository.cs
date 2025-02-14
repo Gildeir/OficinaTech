@@ -45,6 +45,19 @@ namespace OficinaTech.Infrastructure.Repositories
 
             return await _context.SaveChangesAsync() > 0;
         }
+
+        public async Task<bool> DeleteOrcamentoAsync(int id)
+        {
+            var result = await _context.Orcamentos.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (result == null) return false;
+
+            _context.Orcamentos.Remove(result);
+
+            return await _context.SaveChangesAsync() > 0;
+
+
+        }
     }
 
 }
