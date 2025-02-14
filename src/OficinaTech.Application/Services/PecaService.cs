@@ -65,7 +65,9 @@ namespace OficinaTech.Application.Services
                 Tipo = ETipoMovimentacao.Entrada
             };
 
-            return await _movimentacaoEstoqueRepository.RegistrarMovimentacaoAsync(movimentacao);
+            var movimentacaoRegistrada = await _movimentacaoEstoqueRepository.RegistrarMovimentacaoAsync(movimentacao);
+
+            return movimentacaoRegistrada;
         }
 
     }
