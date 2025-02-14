@@ -12,7 +12,8 @@ namespace OficinaTech.Application.Services
         private readonly IPecaRepository _pecaRepository;
         private readonly IMovimentacaoEstoqueRepository _movimentacaoEstoqueRepository;
 
-        public OrcamentoPecaService(IOrcamentoPecaRepository orcamentoPecaRepository, IPecaRepository pecaRepository, IMovimentacaoEstoqueRepository movimentacaoEstoqueRepository)
+        public OrcamentoPecaService(IOrcamentoPecaRepository orcamentoPecaRepository, 
+            IPecaRepository pecaRepository, IMovimentacaoEstoqueRepository movimentacaoEstoqueRepository)
         {
             _orcamentoPecaRepository = orcamentoPecaRepository;
             _pecaRepository = pecaRepository;
@@ -25,10 +26,24 @@ namespace OficinaTech.Application.Services
             if (peca == null) return false;
 
             var orcamentoPecaExistente = await _orcamentoPecaRepository.GetByOrcamentoAndPecaAsync(orcamentoId, pecaId);
+
             if (orcamentoPecaExistente != null)
             {
-                // Evita duplicidade na criação de orçamento
+                
                 orcamentoPecaExistente.Quantidade += quantidadeSolicitada;
+
+                if (orcamentoPecaExistente.Quantidade >= peca.Estoque)
+                {
+                    orcamentoPecaExistente.LiberadaParaCompra = true;
+                    orcamentoPecaExistente.Status = EEstadoPecaOrcamento.LiberadaParaCompra;
+                }
+                else
+                {
+                    orcamentoPecaExistente.LiberadaParaCompra = false;
+                    orcamentoPecaExistente.Status = EEstadoPecaOrcamento.EmEspera;
+                }
+
+
                 return await _orcamentoPecaRepository.UpdateAsync(orcamentoPecaExistente);
             }
 
@@ -40,11 +55,12 @@ namespace OficinaTech.Application.Services
                 PecaId = pecaId,
                 Quantidade = quantidadeSolicitada,
                 LiberadaParaCompra = liberadaParaCompra,
-                Status = EEstadoPecaOrcamento.EmEspera
+                Status = liberadaParaCompra ? EEstadoPecaOrcamento.LiberadaParaCompra : EEstadoPecaOrcamento.EmEspera
             };
 
             return await _orcamentoPecaRepository.AddAsync(orcamentoPeca);
         }
+
 
         public async Task UpdatePrecoEmOrcamentos(int pecaId, decimal novoPreco)
         {
@@ -60,34 +76,50 @@ namespace OficinaTech.Application.Services
         public async Task<bool> UsarPecaNoOrcamento(int orcamentoId, int pecaId)
         {
             var orcamentoPeca = await _orcamentoPecaRepository.GetByOrcamentoAndPecaAsync(orcamentoId, pecaId);
-            if (orcamentoPeca == null) return false;
+            if (orcamentoPeca == null)
+                throw new Exception("Peça não encontrada no orçamento.");
 
             var peca = await _pecaRepository.GetByIdAsync(pecaId);
-            if (peca == null) return false;
+            if (peca == null)
+                throw new Exception("Peça não encontrada no estoque.");
 
-            
-            if (peca.Estoque < orcamentoPeca.Quantidade) return false;
+            int quantidadeDisponivel = peca.Estoque;
+            int quantidadeNecessaria = orcamentoPeca.Quantidade;
+            int quantidadeEntregue = 0;
 
-            
-            peca.Estoque -= orcamentoPeca.Quantidade;
+            if (quantidadeDisponivel >= quantidadeNecessaria)
+            {
+             
+                quantidadeEntregue = quantidadeNecessaria;
+                peca.Estoque -= quantidadeNecessaria;
+                orcamentoPeca.Status = EEstadoPecaOrcamento.Entregue;
+                orcamentoPeca.LiberadaParaCompra = false;
+            }
+            else
+            {
+           
+                quantidadeEntregue = quantidadeDisponivel;
+                peca.Estoque = 0;
+                orcamentoPeca.Quantidade -= quantidadeEntregue;
+                orcamentoPeca.Status = EEstadoPecaOrcamento.LiberadaParaCompra;
+                orcamentoPeca.LiberadaParaCompra = true;
+            }
 
-            
-            orcamentoPeca.Status = EEstadoPecaOrcamento.Entregue;
-
-            
             await _pecaRepository.UpdateAsync(peca);
-
             await _orcamentoPecaRepository.UpdateAsync(orcamentoPeca);
 
+            
             var movimentacao = new MovimentacaoEstoque
             {
                 PecaId = pecaId,
-                Quantidade = orcamentoPeca.Quantidade,
-                Tipo = ETipoMovimentacao.Saida
+                Quantidade = quantidadeEntregue,
+                Tipo = ETipoMovimentacao.Saida,
+                DataMovimentacao = DateTime.UtcNow
             };
 
             return await _movimentacaoEstoqueRepository.RegistrarMovimentacaoAsync(movimentacao);
         }
+
 
 
     }
