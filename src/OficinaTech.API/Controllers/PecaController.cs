@@ -80,5 +80,12 @@ namespace OficinaTech.API.Controllers
             return NoContent(); // TODO Melhoras os retornos NoContent()
         }
 
+        [HttpGet("testar-erro")]
+        public IActionResult TestarErro()
+        {
+            throw new Exception("Erro simulado para testar o middleware!");
+        }
+
+
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using OficinaTech.Infrastructure.Data.Context;
 using OficinaTech.Domain.Interfaces;
 using OficinaTech.Infrastructure.ExternalServices;
+using OficinaTech.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,11 +50,8 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.WriteIndented = true;
     });
 
-
-
 builder.Services.AddHttpClient<ViaCepService>();
 builder.Services.AddScoped<IViaCepService, ViaCepService>();
-
 
 builder.Services.AddScoped<IOrcamentoService, OrcamentoService>();
 builder.Services.AddScoped<IOrcamentoRepository, OrcamentoRepository>();
@@ -67,7 +65,6 @@ builder.Services.AddScoped<IOrcamentoPecaRepository, OrcamentoPecaRepository>();
 builder.Services.AddScoped<IMovimentacaoEstoqueRepository, MovimentacaoEstoqueRepository>();
 builder.Services.AddScoped<IMovimentacaoEstoqueService, MovimentacaoEstoqueService>();
 
-
 builder.Services.AddControllers();
 
 builder.Services.AddCors(options =>
@@ -80,6 +77,8 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -89,7 +88,6 @@ if (app.Environment.IsDevelopment())
         c.RoutePrefix = ""; // Acessa direto na raiz do servidor (http://localhost:5000)
     });
 }
-
 
 app.UseAuthorization();
 app.MapControllers();
