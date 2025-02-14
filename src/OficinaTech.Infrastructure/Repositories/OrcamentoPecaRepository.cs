@@ -21,8 +21,18 @@ namespace OficinaTech.Infrastructure.Repositories
 
         public async Task<OrcamentoPeca> GetByOrcamentoAndPecaAsync(int orcamentoId, int pecaId)
         {
+            var result = await _context.OrcamentoPecas
+                .FirstOrDefaultAsync(x => x.OrcamentoId == orcamentoId && x.PecaId == pecaId) ?? null;
+
+            return result;
+        }
+
+        public async Task<List<OrcamentoPeca>> GetByPecaIdAsync(int pecaId)
+        {
             return await _context.OrcamentoPecas
-                .FirstOrDefaultAsync(x => x.OrcamentoId == orcamentoId && x.PecaId == pecaId) ?? new();
+                .Where(op => op.PecaId == pecaId)
+                .Include(op => op.Peca)
+                .ToListAsync();
         }
 
         public async Task<bool> UpdateAsync(OrcamentoPeca orcamentoPeca)

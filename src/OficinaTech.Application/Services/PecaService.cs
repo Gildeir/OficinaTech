@@ -7,9 +7,11 @@ namespace OficinaTech.Application.Services
     public class PecaService : IPecaService
     {
         private readonly IPecaRepository _pecaRepository;
-        public PecaService(IPecaRepository pecaRepository)
+        private readonly IOrcamentoPecaService _orcamentopecaService;
+        public PecaService(IPecaRepository pecaRepository, IOrcamentoPecaService orcamentoPecaService)
         {
             _pecaRepository = pecaRepository;
+            _orcamentopecaService = orcamentoPecaService;
         }
         public async Task<List<Peca>> GetAllPecasAsync()
         {
@@ -34,5 +36,24 @@ namespace OficinaTech.Application.Services
         {
             return await _pecaRepository.DeleteAsync(id);
         }
+
+        public async Task<bool> ComprarPecaAsync(int pecaId, int quantidade, decimal precoCusto)
+        {
+            var peca = await _pecaRepository.GetByIdAsync(pecaId);
+            if (peca == null) return false; 
+
+            peca.Estoque -= quantidade;
+
+            
+            if (peca.Preco < precoCusto)
+            {
+                peca.Preco = precoCusto;
+
+                await _orcamentopecaService.UpdatePrecoEmOrcamentos(pecaId, precoCusto);
+            }
+
+            return await _pecaRepository.UpdateAsync(peca);
+        }
+
     }
 }

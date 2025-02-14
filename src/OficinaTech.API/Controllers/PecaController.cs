@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OficinaTech.Application.DTOs.OficinaTech.Application.DTOs;
 using OficinaTech.Application.Interfaces;
 using OficinaTech.Domain.Entities;
 
@@ -61,5 +62,20 @@ namespace OficinaTech.API.Controllers
             
             return NoContent();
         }
+
+        [HttpPost("{id}/comprar")]
+        public async Task<IActionResult> ComprarPeca(int id, [FromBody] ComprarPecaDto dto)
+        {
+            if (dto == null || dto.Quantidade <= 0 || dto.PrecoCusto <= 0)
+                return BadRequest("Dados da compra inválidos.");
+
+            var success = await _pecaService.ComprarPecaAsync(id, dto.Quantidade, dto.PrecoCusto);
+
+            if (!success)
+                return NotFound("Peça não encontrada.");
+
+            return NoContent();
+        }
+
     }
 }

@@ -10,5 +10,7 @@ namespace OficinaTech.Application.Interfaces
         Task<bool> UpdatePecaAsync(Peca peca);
         Task<bool> DeletePecaAsync(int id);
 
+        Task<bool> ComprarPecaAsync(int id, int quantidade, decimal precoCusto);
+
     }
 }
