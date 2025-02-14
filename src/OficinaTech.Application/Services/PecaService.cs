@@ -37,12 +37,12 @@ namespace OficinaTech.Application.Services
             return await _pecaRepository.DeleteAsync(id);
         }
 
-        public async Task<bool> ComprarPecaAsync(int pecaId, int quantidade, decimal precoCusto)
+        public async Task<bool> ComprarPecaAsync(int pecaId, int quantidadeReposicao, decimal precoCusto)
         {
             var peca = await _pecaRepository.GetByIdAsync(pecaId);
             if (peca == null) return false; 
 
-            peca.Estoque -= quantidade;
+            peca.Estoque += quantidadeReposicao;
 
             
             if (peca.Preco < precoCusto)
