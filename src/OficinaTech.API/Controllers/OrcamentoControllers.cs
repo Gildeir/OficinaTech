@@ -41,7 +41,7 @@ namespace OficinaTech.API.Controllers
 
             var orcamento = await _orcamentoService.CreateOrcamentoAsync(dto.Numero, dto.Placa, dto.Cliente);
 
-            return CreatedAtAction(nameof(GetOrcamentoById), new { id = orcamento.Id }, orcamento);
+            return CreatedAtAction(nameof(GetOrcamentoById), new { id = orcamento?.Value?.Id }, orcamento);
         }
 
         [HttpGet("{id}/buscar-orcamento")]
@@ -84,7 +84,7 @@ namespace OficinaTech.API.Controllers
         {
             var result = await _orcamentoService.DeleteOrcamentoAsync(id);
 
-            if (!result) return NotFound("Orçamento não encontrado para exclusão.");
+            if (!result.IsSuccess) return NotFound("Orçamento não encontrado para exclusão.");
 
             return Ok("Orçamento deletado");
         }

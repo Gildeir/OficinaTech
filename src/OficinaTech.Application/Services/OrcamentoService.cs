@@ -1,4 +1,5 @@
-﻿using OficinaTech.Application.Factories;
+﻿using OficinaTech.Application.Common;
+using OficinaTech.Application.Factories;
 using OficinaTech.Application.Interfaces;
 using OficinaTech.Domain.Entities;
 using OficinaTech.Infrastructure.Repositories.Interfaces;
@@ -14,28 +15,44 @@ namespace OficinaTech.Application.Services
             _orcamentoRepository = orcamentoRepository;
         }
 
-        public async Task<List<Orcamento>> GetAllOrcamentosAsync()
+        public async Task<Result<List<Orcamento>>> GetAllOrcamentosAsync()
         {
-            return await _orcamentoRepository.GetAllAsync();
+            var result = await _orcamentoRepository.GetAllAsync();
+
+            if (!result.Any())
+                return Result<List<Orcamento>>.Failure("Orçamentos não encontrado");
+            
+            return Result<List<Orcamento>>.Success(result);
         }
 
-        public async Task<Orcamento> GetOrcamentoByIdAsync(int id)
+        public async Task<Result<Orcamento>> GetOrcamentoByIdAsync(int id)
         {
-            return await _orcamentoRepository.GetByIdAsync(id);
-        }
+            var result = await _orcamentoRepository.GetByIdAsync(id);
+            if (result is null)
+                return Result<Orcamento>.Failure($"Orçamento id {id} não encontrado");
 
-        public async Task<Orcamento> CreateOrcamentoAsync(string numero, string placa, string cliente)
+            return Result<Orcamento>.Success(result);
+        }
+        
+        public async Task<Result<Orcamento>> CreateOrcamentoAsync(string numero, string placa, string cliente)
         {
             var orcamento = OrcamentoFactory.CriarOrcamento(numero, placa, cliente);
 
-            await _orcamentoRepository.AddAsync(orcamento);
+            var result = await _orcamentoRepository.AddAsync(orcamento);
 
-            return orcamento;
+            if (!result)
+                return Result<Orcamento>.Failure("Falha ao adicionar orçamento");
+
+            return Result<Orcamento>.Success(orcamento);
         }
 
-        public async Task<bool> DeleteOrcamentoAsync(int id)
+        public async Task<Result<bool>> DeleteOrcamentoAsync(int id)
         {
-            return await _orcamentoRepository.DeleteOrcamentoAsync(id);
+            var result = await _orcamentoRepository.DeleteOrcamentoAsync(id);
+            if (!result)
+                return Result<bool>.Failure($"Não foi possível deletar orçamcento {id}");
+
+            return Result<bool>.Success(true);
         }
     }
 
