@@ -21,7 +21,7 @@ namespace OficinaTech.Application.Services
 
             if (!result.Any())
                 return Result<List<Orcamento>>.Failure("Orçamentos não encontrado");
-            
+
             return Result<List<Orcamento>>.Success(result);
         }
 

@@ -7,6 +7,7 @@ using OficinaTech.Infrastructure.Repositories.Interfaces;
 namespace OficinaTech.Application.Services
 {
     public class OrcamentoPecaService(
+        IUnitOfWork _unitOfWork,
         IOrcamentoPecaRepository _orcamentoPecaRepository,
         IPecaRepository _pecaRepository,
         IMovimentacaoEstoqueRepository _movimentacaoEstoqueRepository
@@ -57,26 +58,29 @@ namespace OficinaTech.Application.Services
             return Result<bool>.Success(true);
         }
 
-        public async Task UpdatePrecoEmOrcamentos(int pecaId, decimal novoPreco)
+        public async Task<Result<bool>> UpdatePrecoEmOrcamentos(int pecaId, decimal novoPreco)
         {
             var orcamentoPecas = await _orcamentoPecaRepository.GetByPecaIdAsync(pecaId);
 
             if (!orcamentoPecas.Any())
-                return;
+                return Result<bool>.Failure("Erro ao encontrar o orçamento peças");
 
             foreach (var item in orcamentoPecas)
             {
                 item.Peca.Preco = novoPreco;
-                await _orcamentoPecaRepository.UpdateAsync(item);
+                var result = await _orcamentoPecaRepository.UpdateAsync(item);
+                if (!result)
+                    return Result<bool>.Failure("Falha ao atualizar preço da peça em orçamento peça");
+                return Result<bool>.Success(true);
             }
-
+            return Result<bool>.Success(true);
         }
 
         public async Task<Result<bool>> UsarPecaNoOrcamento(int orcamentoId, int pecaId)
         {
             try
             {
-                await using var transaction = await _orcamentoPecaRepository.BeginTransactionAsync();
+                await _unitOfWork.BeginTransactionAsync();
 
                 var orcamentoPeca = await _orcamentoPecaRepository.GetByOrcamentoAndPecaAsync(orcamentoId, pecaId);
                 if (orcamentoPeca == null)
@@ -111,13 +115,13 @@ namespace OficinaTech.Application.Services
 
                 if (!updatedPeca)
                 {
-                    await transaction.RollbackAsync();
+                    await _unitOfWork.RollbackAsync();
                     return Result<bool>.Failure("Falha ao atualizar peça estoque ");
                 }
                 
                 if (!updatedOrcamentoPeca)
                 {
-                    await transaction.RollbackAsync();
+                    await _unitOfWork.RollbackAsync();
                     return Result<bool>.Failure("Falha ao atualizar o orçamento peça.");
                 }
 
@@ -132,11 +136,11 @@ namespace OficinaTech.Application.Services
                 var movimentacaoRegistrada = await _movimentacaoEstoqueRepository.RegistrarMovimentacaoAsync(movimentacao);
                 if (!movimentacaoRegistrada)
                 {
-                    await transaction.RollbackAsync();
+                    await _unitOfWork.RollbackAsync();
                     return Result<bool>.Failure("Movimentação de estoque não registrada.");
                 }
 
-                await transaction.CommitAsync();
+                await _unitOfWork.RollbackAsync();
                 return Result<bool>.Success(true);
             }
             catch (Exception ex)

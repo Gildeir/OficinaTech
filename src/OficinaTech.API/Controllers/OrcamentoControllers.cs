@@ -31,7 +31,7 @@ namespace OficinaTech.API.Controllers
         [HttpPost("adicionar-orçamento")]
         public async Task<IActionResult> CriarOrcamento([FromBody] CriarOrcamentoDto dto)
         {
-            //TODO: should refactor and implement fluent validation
+            //TODO (Gildeir): should refactor and implement fluent validation
             if (String.IsNullOrWhiteSpace(dto.Numero))
                 return BadRequest(new { sucess = false, error = "A numeração do orçamento não pode ser nula." });
 
@@ -61,7 +61,7 @@ namespace OficinaTech.API.Controllers
 
 
         [HttpPost("{orcamentoId}/adicionar-peca")]
-        public async Task<IActionResult> AddPeca(int orcamentoId, [FromBody] AdicionarPecaDto dto)
+        public async Task<IActionResult> AddPeca(int orcamentoId, [FromBody] AdicionarPecaDto? dto)
         {
             if (dto == null)
                 return BadRequest(new {success = false, error = "Os dados da peça não podem ser nulos." });

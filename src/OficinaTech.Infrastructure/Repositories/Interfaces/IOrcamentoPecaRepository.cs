@@ -9,9 +9,5 @@ namespace OficinaTech.Infrastructure.Repositories.Interfaces
         Task<OrcamentoPeca?> GetByOrcamentoAndPecaAsync(int orcamentoId, int pecaId);
         Task<bool> UpdateAsync(OrcamentoPeca orcamentoPeca);
         Task<List<OrcamentoPeca>> GetByPecaIdAsync(int pecaId);
-        Task<IDbContextTransaction> BeginTransactionAsync();
-        Task<bool> CommitTransactionAsync(IDbContextTransaction transaction);
-        Task<bool> RollbackTransactionAsync(IDbContextTransaction transaction);
-
     }
 }

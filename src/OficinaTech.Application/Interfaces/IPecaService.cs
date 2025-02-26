@@ -1,16 +1,15 @@
-﻿using OficinaTech.Domain.Entities;
+﻿using OficinaTech.Application.Common;
+using OficinaTech.Domain.Entities;
 
 namespace OficinaTech.Application.Interfaces
 {
     public interface IPecaService
     {
-        Task<bool> AddPecaAsync(Peca peca);
-        Task<List<Peca>> GetAllPecasAsync();
-        Task<Peca> GetPecaByIdAsync(int id);
-        Task<bool> UpdatePecaAsync(Peca peca);
-        Task<bool> DeletePecaAsync(int id);
-
-        Task<bool> ComprarPecaAsync(int id, int quantidade, decimal precoCusto);
-
+        Task<Result<bool>> AddPecaAsync(Peca peca);
+        Task<Result<List<Peca>>> GetAllPecasAsync();
+        Task<Result<Peca>> GetPecaByIdAsync(int id);
+        Task<Result<bool>> UpdatePecaAsync(Peca peca);
+        Task<Result<bool>> DeletePecaAsync(int id);
+        Task<Result<bool>> ComprarPecaAsync(int id, int quantidade, decimal precoCusto);
     }
 }

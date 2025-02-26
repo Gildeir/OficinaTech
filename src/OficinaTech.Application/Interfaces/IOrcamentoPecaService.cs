@@ -10,7 +10,7 @@ namespace OficinaTech.Application.Interfaces
     public interface IOrcamentoPecaService
     {
         Task<Result<bool>> AddPecaToOrcamentoAsync(int orcamentoId, int pecaId, int quantidade);
-        Task UpdatePrecoEmOrcamentos(int pecaId, decimal novoPreco);
+        Task<Result<bool>> UpdatePrecoEmOrcamentos(int pecaId, decimal novoPreco);
         Task<Result<bool>> UsarPecaNoOrcamento(int orcamentoId, int pecaId);
     }
 }

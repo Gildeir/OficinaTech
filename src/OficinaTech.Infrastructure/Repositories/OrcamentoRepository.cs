@@ -14,7 +14,7 @@ namespace OficinaTech.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<List<Orcamento>> GetAllAsync()
+        public async Task<List<Orcamento?>> GetAllAsync()
         {
             var result = await _context.Orcamentos
                 .Include(o => o.OrcamentoPecas)

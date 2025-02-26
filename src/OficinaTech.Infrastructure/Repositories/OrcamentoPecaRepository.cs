@@ -42,36 +42,5 @@ namespace OficinaTech.Infrastructure.Repositories
 
             return await _context.SaveChangesAsync() > 0;
         }
-
-        public async Task<IDbContextTransaction> BeginTransactionAsync()
-        {
-            return await _context.Database.BeginTransactionAsync();
-        }
-
-        public async Task<bool> CommitTransactionAsync(IDbContextTransaction transaction)
-        {
-            try
-            {
-                await transaction.CommitAsync();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        public async Task<bool> RollbackTransactionAsync(IDbContextTransaction transaction)
-        {
-            try
-            {
-                await transaction.RollbackAsync();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
     }
 }
