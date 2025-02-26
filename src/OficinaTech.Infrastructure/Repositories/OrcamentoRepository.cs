@@ -28,7 +28,7 @@ namespace OficinaTech.Infrastructure.Repositories
             var result = await _context.Orcamentos
                 .Include(o => o.OrcamentoPecas)
                 .ThenInclude(op => op.Peca).AsNoTracking()
-                .FirstOrDefaultAsync(o => o.Id == id) ?? new();
+                .FirstOrDefaultAsync(o => o.Id == id);
 
             return result;
         }
