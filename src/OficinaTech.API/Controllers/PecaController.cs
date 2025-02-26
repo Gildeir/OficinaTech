@@ -2,7 +2,6 @@
 using OficinaTech.Application.DTOs.OficinaTech.Application.DTOs;
 using OficinaTech.Application.Interfaces;
 using OficinaTech.Domain.Entities;
-using OficinaTech.Infrastructure.Repositories.Interfaces;
 
 namespace OficinaTech.API.Controllers
 {
@@ -29,7 +28,7 @@ namespace OficinaTech.API.Controllers
         {
             var result = await _pecaService.GetPecaByIdAsync(id);
             
-            if (result == null) return NotFound();
+            if (!result.IsSuccess) return NotFound(new {sucess = false, data = result, erro = result.Error});
             
             return Ok(result);
         }
@@ -70,7 +69,7 @@ namespace OficinaTech.API.Controllers
         [HttpPost("{id}/comprar-repor-estoque")]
         public async Task<IActionResult> ComprarPeca(int id, [FromBody] ComprarPecaDto dto)
         {
-            if (dto == null || dto.Quantidade <= 0 || dto.PrecoCusto <= 0)
+            if (dto.Quantidade <= 0 || dto.PrecoCusto <= 0)
                 return BadRequest("Dados da compra inválidos.");
             
             var result = await _pecaService.ComprarPecaAsync(id, dto.Quantidade, dto.PrecoCusto);

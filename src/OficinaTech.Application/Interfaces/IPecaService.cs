@@ -7,7 +7,7 @@ namespace OficinaTech.Application.Interfaces
     {
         Task<Result<bool>> AddPecaAsync(Peca peca);
         Task<Result<List<Peca>>> GetAllPecasAsync();
-        Task<Result<Peca>> GetPecaByIdAsync(int id);
+        Task<Result<Peca?>> GetPecaByIdAsync(int id);
         Task<Result<bool>> UpdatePecaAsync(Peca peca);
         Task<Result<bool>> DeletePecaAsync(int id);
         Task<Result<bool>> ComprarPecaAsync(int id, int quantidade, decimal precoCusto);
