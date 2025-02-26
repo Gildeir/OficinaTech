@@ -23,7 +23,7 @@ namespace OficinaTech.Infrastructure.Repositories
             return result;
 
         }
-        public async Task<Orcamento> GetByIdAsync(int id)
+        public async Task<Orcamento?> GetByIdAsync(int id)
         {
             var result = await _context.Orcamentos
                 .Include(o => o.OrcamentoPecas)

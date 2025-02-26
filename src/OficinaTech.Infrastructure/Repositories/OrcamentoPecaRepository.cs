@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using OficinaTech.Domain.Entities;
 using OficinaTech.Infrastructure.Data.Context;
 using OficinaTech.Infrastructure.Repositories.Interfaces;
@@ -40,6 +41,37 @@ namespace OficinaTech.Infrastructure.Repositories
             _context.OrcamentoPecas.Update(orcamentoPeca);
 
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        {
+            return await _context.Database.BeginTransactionAsync();
+        }
+
+        public async Task<bool> CommitTransactionAsync(IDbContextTransaction transaction)
+        {
+            try
+            {
+                await transaction.CommitAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> RollbackTransactionAsync(IDbContextTransaction transaction)
+        {
+            try
+            {
+                await transaction.RollbackAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

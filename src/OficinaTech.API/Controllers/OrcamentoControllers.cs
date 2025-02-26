@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OficinaTech.Application.DTOs;
 using OficinaTech.Application.Interfaces;
-using OficinaTech.Application.Services;
 
 namespace OficinaTech.API.Controllers
 {
@@ -22,24 +21,30 @@ namespace OficinaTech.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllOrcamentos()
         {
-            return Ok(await _orcamentoService.GetAllOrcamentosAsync());
+            var result = await _orcamentoService.GetAllOrcamentosAsync();
+            if (!result.IsSuccess)
+                return NotFound(new { success = false, errors = result.Error });
+
+            return Ok(new { success = true, data = result.Value });
         }
 
         [HttpPost("adicionar-orçamento")]
         public async Task<IActionResult> CriarOrcamento([FromBody] CriarOrcamentoDto dto)
         {
-  
+            //TODO: should refactor and implement fluent validation
             if (String.IsNullOrWhiteSpace(dto.Numero))
-                return BadRequest("A numeração do orçamento não pode ser nula.");
+                return BadRequest(new { sucess = false, error = "A numeração do orçamento não pode ser nula." });
 
             if (String.IsNullOrWhiteSpace(dto.Cliente))
-                return BadRequest("O nome do cliente não pode ser nulo.");
+                return BadRequest(new { success = false, error = "O nome do cliente não pode ser nulo." });
 
             if (String.IsNullOrWhiteSpace(dto.Placa))
-                return BadRequest("A placa não pode ser nula.");
-
+                return BadRequest(new { sucess = false, error = "A placa do veículo não pode ser nula"});
 
             var orcamento = await _orcamentoService.CreateOrcamentoAsync(dto.Numero, dto.Placa, dto.Cliente);
+
+            if (!orcamento.IsSuccess)
+                return BadRequest(new { success = false, error = orcamento.Error });
 
             return CreatedAtAction(nameof(GetOrcamentoById), new { id = orcamento?.Value?.Id }, orcamento);
         }
@@ -49,9 +54,9 @@ namespace OficinaTech.API.Controllers
         {
             var orcamento = await _orcamentoService.GetOrcamentoByIdAsync(id);
 
-            if (orcamento == null) return NotFound();
+            if (!orcamento.IsSuccess) return NotFound(new { success = false, error = orcamento.Error });
 
-            return Ok(orcamento);
+            return Ok( new { sucess = true, data = orcamento.Value });
         }
 
 
@@ -59,14 +64,14 @@ namespace OficinaTech.API.Controllers
         public async Task<IActionResult> AddPeca(int orcamentoId, [FromBody] AdicionarPecaDto dto)
         {
             if (dto == null)
-                return BadRequest("Os dados da peça não podem ser nulos.");
+                return BadRequest(new {success = false, error = "Os dados da peça não podem ser nulos." });
 
-            var isAdded = await _orcamentoPecaService.AddPecaToOrcamentoAsync(orcamentoId, dto.PecaId, dto.Quantidade);
+            var result = await _orcamentoPecaService.AddPecaToOrcamentoAsync(orcamentoId, dto.PecaId, dto.Quantidade);
 
-            if (!isAdded)
-                return NotFound("Orçamento ou peça não encontrados.");
+            if (!result.IsSuccess)
+                return NotFound(new { success = false, error = result.Error });
 
-            return Ok($"Sucesso ao adicionar a peça");
+            return Ok( new { success = true, data = result.Value });
         }
 
         [HttpPost("{id}/entregar-peca/{pecaId}")]
@@ -74,7 +79,7 @@ namespace OficinaTech.API.Controllers
         {
             var success = await _orcamentoPecaService.UsarPecaNoOrcamento(orcamentoId, pecaId);
 
-            if (!success) return BadRequest("Não foi possível entregar a peça. Verifique se há estoque suficiente.");
+            if (!success.IsSuccess) return BadRequest("Não foi possível entregar a peça. Verifique se há estoque suficiente.");
 
             return Ok(success);
         }
