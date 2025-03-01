@@ -41,7 +41,7 @@ namespace OficinaTech.Tests
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(2, result.Count);
+            Assert.Equal(2, result.Value.Count);
         }
 
         [Fact(DisplayName = "Obter Orçamento Pelo ID Deve Retornar Orçamento Quando Existente")]
@@ -57,24 +57,26 @@ namespace OficinaTech.Tests
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal("001", result.Numero);
-            Assert.Equal("ABC1234", result.PlacaVeiculo);
-            Assert.Equal("João", result.Cliente);
+            Assert.Equal("001", result.Value.Numero);
+            Assert.Equal("ABC1234", result.Value.PlacaVeiculo);
+            Assert.Equal("João", result.Value.Cliente);
         }
 
         [Fact(DisplayName = "Obter Orçamento Pelo ID Deve Retornar Nulo Quando Não Existente")]
         public async Task GetOrcamentoByIdAsync_DeveRetornarNulo_QuandoNaoExistente()
         {
             // Arrange
+
+            var orcamento = new Orcamento();
             _orcamentoRepositoryMock
                 .Setup(repo => repo.GetByIdAsync(It.IsAny<int>()))
-                .ReturnsAsync((Orcamento?)null);
+                .ReturnsAsync(orcamento);
 
             // Act
             var result = await _orcamentoService.GetOrcamentoByIdAsync(1);
 
             // Assert
-            Assert.Null(result);
+            Assert.Null(result.Error);
         }
 
         [Fact(DisplayName = "Criar Novo Orçamento Deve Retornar Orçamento Criado")]
@@ -89,9 +91,9 @@ namespace OficinaTech.Tests
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal("001", result.Numero);
-            Assert.Equal("ABC1234", result.PlacaVeiculo);
-            Assert.Equal("João", result.Cliente);
+            Assert.Equal("001", result.Value.Numero);
+            Assert.Equal("ABC1234", result.Value.PlacaVeiculo);
+            Assert.Equal("João", result.Value.Cliente);
         }
     }
 }

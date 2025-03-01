@@ -2,7 +2,6 @@
 using OficinaTech.Application.DTOs.OficinaTech.Application.DTOs;
 using OficinaTech.Application.Interfaces;
 using OficinaTech.Domain.Entities;
-using OficinaTech.Infrastructure.Repositories.Interfaces;
 
 namespace OficinaTech.API.Controllers
 {
@@ -29,7 +28,7 @@ namespace OficinaTech.API.Controllers
         {
             var result = await _pecaService.GetPecaByIdAsync(id);
             
-            if (result == null) return NotFound();
+            if (!result.IsSuccess) return NotFound(new {sucess = false, data = result, erro = result.Error});
             
             return Ok(result);
         }
@@ -39,7 +38,7 @@ namespace OficinaTech.API.Controllers
         {
             var pecaResult = await _pecaService.AddPecaAsync(peca);
 
-            if (!pecaResult) return BadRequest("Erro ao adicionar a peça.");
+            if (!pecaResult.IsSuccess) return BadRequest("Erro ao adicionar a peça.");
 
             return CreatedAtAction(nameof(GetAllPecas), new { id = peca.Id }, peca);
         }
@@ -49,9 +48,12 @@ namespace OficinaTech.API.Controllers
         {
             if (id != peca.Id) return BadRequest("Erro ao informar id");
 
-            if (await _pecaService.UpdatePecaAsync(peca)) return NoContent();
+            var pecaResult = await _pecaService.UpdatePecaAsync(peca);
 
-            return NotFound("Peça não encontrada para atualização.");
+            if (!pecaResult.IsSuccess)
+                return NotFound(new { Success = false, data = pecaResult.Value, error = pecaResult.Error });
+
+            return Ok($"{peca.Nome} atualizada com sucesso");
         }
 
         [HttpDelete("{id}")]
@@ -59,7 +61,7 @@ namespace OficinaTech.API.Controllers
         {
            var result = await _pecaService.DeletePecaAsync(id);
 
-            if (!result) return NotFound("Peça não encontrada para exclusão.");
+            if (!result.IsSuccess) return NotFound("Peça não encontrada para exclusão.");
             
             return Ok("Peça deletada");
         }
@@ -67,14 +69,12 @@ namespace OficinaTech.API.Controllers
         [HttpPost("{id}/comprar-repor-estoque")]
         public async Task<IActionResult> ComprarPeca(int id, [FromBody] ComprarPecaDto dto)
         {
-            if (dto == null || dto.Quantidade <= 0 || dto.PrecoCusto <= 0)
+            if (dto.Quantidade <= 0 || dto.PrecoCusto <= 0)
                 return BadRequest("Dados da compra inválidos.");
+            
+            var result = await _pecaService.ComprarPecaAsync(id, dto.Quantidade, dto.PrecoCusto);
 
-           var statusPeca = _pecaService.GetPecaByIdAsync(id).Result;
-
-           var success = await _pecaService.ComprarPecaAsync(id, dto.Quantidade, dto.PrecoCusto);
-
-            if (!success)
+            if (!result.IsSuccess)
                 return NotFound("Peça não encontrada.");
 
             return Ok("Compra realizada com sucesso");

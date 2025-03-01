@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using OficinaTech.Domain.Entities;
 using OficinaTech.Infrastructure.Data.Context;
 using OficinaTech.Infrastructure.Repositories.Interfaces;
@@ -19,10 +20,10 @@ namespace OficinaTech.Infrastructure.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<OrcamentoPeca> GetByOrcamentoAndPecaAsync(int orcamentoId, int pecaId)
+        public async Task<OrcamentoPeca?> GetByOrcamentoAndPecaAsync(int orcamentoId, int pecaId)
         {
             var result = await _context.OrcamentoPecas
-                .FirstOrDefaultAsync(x => x.OrcamentoId == orcamentoId && x.PecaId == pecaId) ?? null;
+                .FirstOrDefaultAsync(x => x.OrcamentoId == orcamentoId && x.PecaId == pecaId);
 
             return result;
         }

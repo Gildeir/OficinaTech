@@ -14,7 +14,7 @@ namespace OficinaTech.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<List<Orcamento>> GetAllAsync()
+        public async Task<List<Orcamento?>> GetAllAsync()
         {
             var result = await _context.Orcamentos
                 .Include(o => o.OrcamentoPecas)
@@ -23,12 +23,12 @@ namespace OficinaTech.Infrastructure.Repositories
             return result;
 
         }
-        public async Task<Orcamento> GetByIdAsync(int id)
+        public async Task<Orcamento?> GetByIdAsync(int id)
         {
             var result = await _context.Orcamentos
                 .Include(o => o.OrcamentoPecas)
                 .ThenInclude(op => op.Peca).AsNoTracking()
-                .FirstOrDefaultAsync(o => o.Id == id) ?? new();
+                .FirstOrDefaultAsync(o => o.Id == id);
 
             return result;
         }

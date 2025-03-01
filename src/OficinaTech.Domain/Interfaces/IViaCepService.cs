@@ -1,10 +1,10 @@
-﻿using OficinaTech.Domain.Entities;
+﻿using OficinaTech.Domain.Common;
+using OficinaTech.Domain.Entities;
 
 namespace OficinaTech.Domain.Interfaces
 {
     public interface IViaCepService
     {
-        Task<Fornecedor> BuscarEnderecoPorCepAsync(string cep);
-
+        Task<DomainResult<Fornecedor>> BuscarEnderecoPorCepAsync(string cep);
     }
 }

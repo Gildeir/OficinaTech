@@ -17,7 +17,7 @@ namespace OficinaTech.API.Controllers
         {
             var movimentacoes = await _movimentacaoEstoqueService.GetMovimentacoesPorPecaAsync(id);
 
-            if (movimentacoes == null || !movimentacoes.Any())
+            if (!movimentacoes.IsSuccess)
                 return NotFound("Nenhuma movimentação encontrada para esta peça.");
 
             return Ok(movimentacoes);
