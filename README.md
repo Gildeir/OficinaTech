@@ -2,8 +2,7 @@
 
 ### 📌 Objetivo
 
-O objetivo deste projeto é desenvolver um sistema básico para validação de conhecimento.
-
+O objetivo deste projeto é desenvolver um sistema para uma oficina de manutenção de veículos
 ### 📝 Descrição
 
 Desenvolver um sistema para uma oficina de manutenção de veículos, automatizando e digitalizando processos. A estrutura do sistema será baseada nos seguintes conceitos:
