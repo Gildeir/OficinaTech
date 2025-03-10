@@ -85,14 +85,17 @@ var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-app.UseSwagger();
-app.UseSwaggerUI(c =>
+if (app.Environment.IsDevelopment())
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "OficinaTech API v1");
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "OficinaTech API v1");
     c.RoutePrefix = ""; // Corrigiu swagger incompleto no navegador.
-});
+    });
+}
 
 app.UseAuthorization();
 app.MapControllers();
-app.Urls.Add("http://0.0.0.0:80");
+
 app.Run();

@@ -6,8 +6,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:5079",
-      "launchUrl": "swagger"
+      "applicationUrl": "http://localhost:5079"
     },
     "https": {
       "commandName": "Project",
@@ -15,12 +14,11 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:7103;http://localhost:5079",
-      "launchUrl": "swagger"
+      "applicationUrl": "https://localhost:7103;http://localhost:5079"
     },
     "Container (Dockerfile)": {
       "commandName": "Docker",
-      "launchUrl": "swagger",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
       "environmentVariables": {
         "ASPNETCORE_HTTPS_PORTS": "8081",
         "ASPNETCORE_HTTP_PORTS": "8080"
@@ -33,8 +31,7 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "launchUrl": "swagger"
+      }
     }
   },
   "$schema": "https://json.schemastore.org/launchsettings.json",

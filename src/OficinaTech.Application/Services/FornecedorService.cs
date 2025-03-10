@@ -1,6 +1,9 @@
-﻿using OficinaTech.Domain.Common;
+﻿using OficinaTech.Application.Common;
+using OficinaTech.Application.Interfaces;
+using OficinaTech.Domain.Common;
 using OficinaTech.Domain.Entities;
 using OficinaTech.Domain.Interfaces;
+using OficinaTech.Infrastructure.ExternalServices;
 using System.Threading.Tasks;
 
 namespace OficinaTech.Application.Services

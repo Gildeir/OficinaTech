@@ -1,4 +1,5 @@
-﻿using OficinaTech.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using OficinaTech.Domain.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
