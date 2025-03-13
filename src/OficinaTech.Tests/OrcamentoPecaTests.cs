@@ -14,19 +14,20 @@ namespace OficinaTech.Tests
         private readonly Mock<IOrcamentoPecaRepository> _orcamentoPecaRepositoryMock;
         private readonly Mock<IPecaRepository> _pecaRepositoryMock;
         private readonly Mock<IMovimentacaoEstoqueRepository> _movimentacaoEstoqueRepositoryMock;
+        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
         private readonly OrcamentoPecaService _orcamentoPecaService;
         public OrcamentoPecaTests()
         {
-            {
-                _orcamentoPecaRepositoryMock = new Mock<IOrcamentoPecaRepository>();
-                _pecaRepositoryMock = new Mock<IPecaRepository>();
-                _movimentacaoEstoqueRepositoryMock = new Mock<IMovimentacaoEstoqueRepository>();
-                //_orcamentoPecaService = new OrcamentoPecaService(
-                //    _orcamentoPecaRepositoryMock.Object,
-                //    _pecaRepositoryMock.Object,
-                //    _movimentacaoEstoqueRepositoryMock.Object
-                //);
-            }
+            _orcamentoPecaRepositoryMock = new Mock<IOrcamentoPecaRepository>();
+            _pecaRepositoryMock = new Mock<IPecaRepository>();
+            _movimentacaoEstoqueRepositoryMock = new Mock<IMovimentacaoEstoqueRepository>();
+            _unitOfWorkMock = new Mock<IUnitOfWork>();
+            _orcamentoPecaService = new OrcamentoPecaService(
+                _unitOfWorkMock.Object,
+                _orcamentoPecaRepositoryMock.Object,
+                _pecaRepositoryMock.Object,
+                _movimentacaoEstoqueRepositoryMock.Object
+            );
         }
 
         [Fact(DisplayName = "Adicionar Peça ao Orçamento Deve Retornar Verdadeiro Quando Bem Sucedido")]
@@ -49,10 +50,10 @@ namespace OficinaTech.Tests
         {
             // Arrange
             var orcamentoPecas = new List<OrcamentoPeca>
-            {
-                new OrcamentoPeca { OrcamentoId = 1, Peca = new Peca { Id = 1, Preco = 50 } },
-                new OrcamentoPeca { OrcamentoId = 2, Peca = new Peca { Id = 1, Preco = 50 } }
-            };
+                    {
+                        new OrcamentoPeca { OrcamentoId = 1, Peca = new Peca { Id = 1, Preco = 50 } },
+                        new OrcamentoPeca { OrcamentoId = 2, Peca = new Peca { Id = 1, Preco = 50 } }
+                    };
 
             _orcamentoPecaRepositoryMock.Setup(repo => repo.GetByPecaIdAsync(1)).ReturnsAsync(orcamentoPecas);
             _orcamentoPecaRepositoryMock.Setup(repo => repo.UpdateAsync(It.IsAny<OrcamentoPeca>())).ReturnsAsync(true);

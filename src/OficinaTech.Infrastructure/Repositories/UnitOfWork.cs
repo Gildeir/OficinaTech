@@ -8,7 +8,7 @@ namespace OficinaTech.Infrastructure.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private readonly OficinaTechDbContext _context;
-        private IDbContextTransaction? _transaction;
+        private IDbContextTransaction _transaction;
 
         public UnitOfWork(OficinaTechDbContext context)
         {
