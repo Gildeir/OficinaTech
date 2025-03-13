@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using System;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -91,11 +92,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "OficinaTech API v1");
-    c.RoutePrefix = ""; // Corrigiu swagger incompleto no navegador.
+        c.RoutePrefix = ""; // Corrigiu swagger incompleto no navegador.
     });
 }
 
 app.UseAuthorization();
+app.Urls.Add("http://0.0.0.0:80");
 app.MapControllers();
 
 app.Run();

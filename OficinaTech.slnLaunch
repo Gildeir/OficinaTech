@@ -6,6 +6,11 @@
         "Path": "docker-compose.dcproj",
         "Action": "Start",
         "DebugTarget": "Docker Compose"
+      },
+      {
+        "Path": "src\\OficinaTech.API\\OficinaTech.API.csproj",
+        "Action": "Start",
+        "DebugTarget": "Container (Dockerfile)"
       }
     ]
   }

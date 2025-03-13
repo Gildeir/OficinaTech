@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+<PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+</PropertyGroup>
+<ItemGroup>
+  <ProjectReference Include="..\OficinaTech.Domain\OficinaTech.Domain.csproj" />
+  <ProjectReference Include="..\OficinaTech.Infrastructure\OficinaTech.Infrastructure.csproj" />
+</ItemGroup>
+</Project>
