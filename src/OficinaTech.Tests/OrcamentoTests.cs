@@ -1,5 +1,5 @@
 ﻿using Moq;
-
+using OficinaTech.Application.Interfaces;
 using OficinaTech.Application.Services;
 using OficinaTech.Domain.Entities;
 using OficinaTech.Infrastructure.Repositories.Interfaces;
@@ -12,20 +12,29 @@ namespace OficinaTech.Tests
     public class OrcamentoTests
     {
         private readonly Mock<IOrcamentoRepository> _orcamentoRepositoryMock;
+        private readonly IPecaService pecaService;
+
         private readonly Mock<IPecaRepository> _pecaRepositoryMock;
         private readonly OrcamentoService _orcamentoService;
-        private readonly Mock<IOrcamentoPecaRepository> _orcamentoPecaRepositoryMock;
-        private readonly OrcamentoPecaService _orcamentoPecaService;
-
-
-
         public OrcamentoTests()
         {
             _orcamentoRepositoryMock = new Mock<IOrcamentoRepository>();
             _pecaRepositoryMock = new Mock<IPecaRepository>();
             _orcamentoService = new OrcamentoService(_orcamentoRepositoryMock.Object, _pecaRepositoryMock.Object);
-            _orcamentoPecaRepositoryMock = new Mock<IOrcamentoPecaRepository>();
+            //_orcamentoPecaRepositoryMock = new Mock<IOrcamentoPecaRepository>();
 
+            var orcamentoPecaServiceMock = new Mock<IOrcamentoPecaService>();
+            var unitOfWorkMock = new Mock<IUnitOfWork>();
+            var movimentacaoEstoqueRepositoryMock = new Mock<IMovimentacaoEstoqueRepository>();
+            var orcamentoPecaRepositoryMock = new Mock<IOrcamentoPecaRepository>();
+
+            pecaService = new PecaService(
+                _pecaRepositoryMock.Object,
+                orcamentoPecaServiceMock.Object,
+                unitOfWorkMock.Object,
+                movimentacaoEstoqueRepositoryMock.Object,
+                orcamentoPecaRepositoryMock.Object
+            );
         }
 
         [Fact(DisplayName = "Obter Todos os Orçamentos Deve Retornar Lista de Orçamentos")]

@@ -28,14 +28,14 @@ namespace OficinaTech.Application.Services
             return Result<List<Orcamento>>.Success(result);
         }
 
-        public async Task<Result<Orcamento?>> GetOrcamentoByIdAsync(int id)
+        public async Task<Result<Orcamento>> GetOrcamentoByIdAsync(int id)
         {
             var result = await _orcamentoRepository.GetByIdAsync(id);
             
             if (result == null)
-                return Result<Orcamento?>.Failure($"Orçamento id {id} não encontrado");
+                return Result<Orcamento>.Failure($"Orçamento id {id} não encontrado");
 
-            return Result<Orcamento?>.Success(result);
+            return Result<Orcamento>.Success(result);
         }
         
         public async Task<Result<Orcamento>> CreateOrcamentoAsync(string numero, string placa, string cliente)

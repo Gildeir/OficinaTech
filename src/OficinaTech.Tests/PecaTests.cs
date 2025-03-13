@@ -30,12 +30,13 @@ namespace OficinaTech.Tests
             _orcamentoPecaServiceMock = new Mock<IOrcamentoPecaService>();
             _orcamentoPecaRepositoryMock = new Mock<IOrcamentoPecaRepository>();
 
-            //_pecaService = new PecaService(
-            //    _pecaRepositoryMock.Object,
-            //    _orcamentoPecaServiceMock.Object,
-            //    _movimentacaoEstoqueRepositoryMock.Object,
-            //    _orcamentoPecaRepositoryMock.Object
-            //);
+            _pecaService = new PecaService(
+                _pecaRepositoryMock.Object,
+                _orcamentoPecaServiceMock.Object,
+                null, // Add the missing IUnitOfWork parameter
+                _movimentacaoEstoqueRepositoryMock.Object,
+                _orcamentoPecaRepositoryMock.Object
+            );
         }
 
 

@@ -43,18 +43,18 @@ namespace OficinaTech.Infrastructure.ExternalServices
     public class ViaCepResponse
     {
         [JsonPropertyName("cep")]
-        public string? Cep { get; set; }
+        public string Cep { get; set; }
 
         [JsonPropertyName("logradouro")]
-        public string? Logradouro { get; set; }
+        public string Logradouro { get; set; }
 
         [JsonPropertyName("bairro")]
-        public string? Bairro { get; set; }
+        public string Bairro { get; set; }
 
         [JsonPropertyName("localidade")]
-        public string? Cidade { get; set; }
+        public string Cidade { get; set; }
 
         [JsonPropertyName("uf")]
-        public string? Estado { get; set; }
+        public string Estado { get; set; }
     }
 }

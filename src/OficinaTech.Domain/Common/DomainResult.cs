@@ -3,10 +3,10 @@
     public class DomainResult<T>
     {
         public bool IsSuccess { get; }
-        public T? Value { get; }
-        public string? Error { get; }
+        public T Value { get; }
+        public string Error { get; }
 
-        private DomainResult(T? value, bool isSuccess, string? error)
+        private DomainResult(T value, bool isSuccess, string error)
         {
             Value = value;
             IsSuccess = isSuccess;
