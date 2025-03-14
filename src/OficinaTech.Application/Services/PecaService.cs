@@ -2,7 +2,6 @@
 using OficinaTech.Application.Interfaces;
 using OficinaTech.Domain.Entities;
 using OficinaTech.Domain.Enum;
-using OficinaTech.Infrastructure.Repositories;
 using OficinaTech.Infrastructure.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -132,7 +131,7 @@ namespace OficinaTech.Application.Services
             }
             catch (Exception ex)
             {
-                await _unitOfWork.RollbackAsync();
+                await _unitOfWork.CommitAsync();
                 return Result<bool>.Failure($"Erro inesperado: {ex.Message}");
             }
         }
