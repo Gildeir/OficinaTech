@@ -84,6 +84,7 @@ namespace OficinaTech.Application.Services
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
+               
 
                 var orcamentoPeca = await _orcamentoPecaRepository.GetByOrcamentoAndPecaAsync(orcamentoId, pecaId);
                 if (orcamentoPeca == null)
@@ -143,7 +144,7 @@ namespace OficinaTech.Application.Services
                     return Result<bool>.Failure("Movimentação de estoque não registrada.");
                 }
 
-                await _unitOfWork.RollbackAsync();
+                await _unitOfWork.CommitAsync();
                 return Result<bool>.Success(true);
             }
             catch (Exception ex)

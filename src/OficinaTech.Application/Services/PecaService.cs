@@ -5,6 +5,7 @@ using OficinaTech.Domain.Enum;
 using OficinaTech.Infrastructure.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace OficinaTech.Application.Services
@@ -79,6 +80,7 @@ namespace OficinaTech.Application.Services
         public async Task<Result<bool>> ComprarPecaAsync(int pecaId, int quantidadeReposicao, decimal precoCusto)
         {
             await _unitOfWork.BeginTransactionAsync();
+
             try
             {
                 var peca = await _pecaRepository.GetByIdAsync(pecaId);
@@ -126,7 +128,7 @@ namespace OficinaTech.Application.Services
                     return Result<bool>.Failure("Falha ao registrar movimentação");
                 }
 
-                await _unitOfWork.RollbackAsync();
+                await _unitOfWork.CommitAsync();
                 return Result<bool>.Success(true);
             }
             catch (Exception ex)
