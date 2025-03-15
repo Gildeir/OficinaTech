@@ -28,10 +28,18 @@ namespace OficinaTech.Infrastructure.Data.Configuration
                    .IsRequired()
                    .HasMaxLength(100);
 
+            builder.Property(o => o.Total)
+                   .HasColumnType("decimal(10,2)");
+                   
             builder.HasMany(o => o.OrcamentoPecas)
                    .WithOne(op => op.Orcamento)
                    .HasForeignKey(op => op.OrcamentoId)
                    .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(o => o.ServiceOrder)
+                     .WithOne(so => so.Orcamento)
+                     .HasForeignKey<ServiceOrder>(so => so.OrcamentoId)
+                     .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

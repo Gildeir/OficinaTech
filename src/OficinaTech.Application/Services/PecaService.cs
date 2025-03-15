@@ -102,17 +102,17 @@ namespace OficinaTech.Application.Services
                     return Result<bool>.Failure("Falha ao atualizar peça");
                 }
 
-                var orcamentosPeca = await _orcamentoPecaRepository.GetByPecaIdAsync(pecaId);
+                //var orcamentosPeca = await _orcamentoPecaRepository.GetByPecaIdAsync(pecaId);
 
-                foreach (var orcamentoPeca in orcamentosPeca)
-                {
-                    var result = await _orcamentoPecaService.UsarPecaNoOrcamento(orcamentoPeca.OrcamentoId, pecaId);
-                    if (!result.IsSuccess)
-                    {
-                        await _unitOfWork.RollbackAsync();
-                        return Result<bool>.Failure("Erro ao usar peça no orçamento");
-                    }
-                }
+                //foreach (var orcamentoPeca in orcamentosPeca)
+                //{
+                //    var result = await _orcamentoPecaService.UsarPecaNoOrcamento(orcamentoPeca.OrcamentoId, pecaId);
+                //    if (!result.IsSuccess)
+                //    {
+                //        await _unitOfWork.RollbackAsync();
+                //        return Result<bool>.Failure("Erro ao usar peça no orçamento");
+                //    }
+                //}
 
                 var movimentacao = new MovimentacaoEstoque
                 {

@@ -30,7 +30,7 @@ namespace OficinaTech.API.Controllers
             return Ok(new { success = true, data = result.Value });
         }
 
-        [HttpPost("adicionar-orçamento")]
+        [HttpPost("adicionar-orcamento")]
         public async Task<IActionResult> CriarOrcamento([FromBody] CriarOrcamentoDto dto)
         {
             //TODO (Gildeir): should refactor and implement fluent validation

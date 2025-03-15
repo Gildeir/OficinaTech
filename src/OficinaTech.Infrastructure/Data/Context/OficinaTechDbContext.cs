@@ -24,6 +24,7 @@ namespace OficinaTech.Infrastructure.Data.Context
             modelBuilder.ApplyConfiguration<Peca>(new PecaConfiguration());
             modelBuilder.ApplyConfiguration<OrcamentoPeca>(new OrcamentoPecaConfiguration());
             modelBuilder.ApplyConfiguration<MovimentacaoEstoque>(new MovimentacaoEstoqueConfiguration());
+            modelBuilder.ApplyConfiguration<ServiceOrder>(new ServiceOrderConfiguration());
 
             modelBuilder.Entity<Peca>().HasData(
                 new Peca { Id = -1, Nome = "Filtro de Óleo", Estoque = 10, Preco = 25.90m },
