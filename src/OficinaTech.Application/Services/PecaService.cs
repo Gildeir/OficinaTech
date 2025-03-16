@@ -2,10 +2,10 @@
 using OficinaTech.Application.Interfaces;
 using OficinaTech.Domain.Entities;
 using OficinaTech.Domain.Enum;
-using OficinaTech.Infrastructure.Repositories;
 using OficinaTech.Infrastructure.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace OficinaTech.Application.Services
@@ -80,13 +80,34 @@ namespace OficinaTech.Application.Services
         public async Task<Result<bool>> ComprarPecaAsync(int pecaId, int quantidadeReposicao, decimal precoCusto)
         {
             await _unitOfWork.BeginTransactionAsync();
+
             try
             {
                 var peca = await _pecaRepository.GetByIdAsync(pecaId);
                 if (peca == null)
                     return Result<bool>.Failure($"Erro ao buscar peça id {pecaId}");
 
+                var orcamentoPeca = await _orcamentoPecaRepository.GetByPecaIdAsync(pecaId);
+
+                foreach (var item in orcamentoPeca)
+                {
+                    if (item.LiberadaParaCompra == false)
+                    {
+                        await _unitOfWork.RollbackAsync();
+                        return Result<bool>.Failure("Peça não está liberada para compra.");
+                    }
+                }
+
                 peca.Estoque += quantidadeReposicao;
+
+                foreach (var item in orcamentoPeca)
+                {
+                    if(item.Quantidade <= item.Peca.Estoque)
+                    {
+                        item.LiberadaParaCompra = false;
+                        item.Status = EEstadoPecaOrcamento.Comprada;
+                    }
+                }
 
                 if (peca.Preco < precoCusto)
                 {
@@ -101,17 +122,17 @@ namespace OficinaTech.Application.Services
                     return Result<bool>.Failure("Falha ao atualizar peça");
                 }
 
-                var orcamentosPeca = await _orcamentoPecaRepository.GetByPecaIdAsync(pecaId);
+                //var orcamentosPeca = await _orcamentoPecaRepository.GetByPecaIdAsync(pecaId);
 
-                foreach (var orcamentoPeca in orcamentosPeca)
-                {
-                    var result = await _orcamentoPecaService.UsarPecaNoOrcamento(orcamentoPeca.OrcamentoId, pecaId);
-                    if (!result.IsSuccess)
-                    {
-                        await _unitOfWork.RollbackAsync();
-                        return Result<bool>.Failure("Erro ao usar peça no orçamento");
-                    }
-                }
+                //foreach (var orcamentoPeca in orcamentosPeca)
+                //{
+                //    var result = await _orcamentoPecaService.UsarPecaNoOrcamento(orcamentoPeca.OrcamentoId, pecaId);
+                //    if (!result.IsSuccess)
+                //    {
+                //        await _unitOfWork.RollbackAsync();
+                //        return Result<bool>.Failure("Erro ao usar peça no orçamento");
+                //    }
+                //}
 
                 var movimentacao = new MovimentacaoEstoque
                 {
@@ -127,12 +148,12 @@ namespace OficinaTech.Application.Services
                     return Result<bool>.Failure("Falha ao registrar movimentação");
                 }
 
-                await _unitOfWork.RollbackAsync();
+                await _unitOfWork.CommitAsync();
                 return Result<bool>.Success(true);
             }
             catch (Exception ex)
             {
-                await _unitOfWork.RollbackAsync();
+                await _unitOfWork.CommitAsync();
                 return Result<bool>.Failure($"Erro inesperado: {ex.Message}");
             }
         }

@@ -30,7 +30,7 @@ namespace OficinaTech.API.Controllers
             return Ok(new { success = true, data = result.Value });
         }
 
-        [HttpPost("adicionar-orçamento")]
+        [HttpPost("adicionar-orcamento")]
         public async Task<IActionResult> CriarOrcamento([FromBody] CriarOrcamentoDto dto)
         {
             //TODO (Gildeir): should refactor and implement fluent validation
@@ -76,14 +76,14 @@ namespace OficinaTech.API.Controllers
             return Ok( new { success = true, data = result.Value });
         }
 
-        [HttpPost("{id}/entregar-peca/{pecaId}")]
-        public async Task<IActionResult> EntregarPeca(int orcamentoId, int pecaId)
+        [HttpPost("executar-ordem-de-servico")]
+        public async Task<IActionResult> ExecutarOrdemServico(int orcamentoId)
         {
-            var success = await _orcamentoPecaService.UsarPecaNoOrcamento(orcamentoId, pecaId);
+            var success = await _orcamentoPecaService.ExecutarOrdemServicoAsync(orcamentoId);
 
-            if (!success.IsSuccess) return BadRequest("Não foi possível entregar a peça. Verifique se há estoque suficiente.");
+            if (!success.IsSuccess) return BadRequest(success.Error);
 
-            return Ok(success);
+            return Ok(success.IsSuccess);
         }
 
         [HttpDelete("{id}")]

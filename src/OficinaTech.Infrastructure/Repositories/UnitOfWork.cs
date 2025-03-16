@@ -17,7 +17,10 @@ namespace OficinaTech.Infrastructure.Repositories
 
         public async Task BeginTransactionAsync()
         {
-            _transaction = await _context.Database.BeginTransactionAsync();
+            if(_transaction == null)
+            {
+                _transaction = await _context.Database.BeginTransactionAsync();
+            }
         }
 
         public async Task<bool> CommitAsync()

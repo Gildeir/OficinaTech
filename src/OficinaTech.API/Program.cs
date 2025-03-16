@@ -70,6 +70,8 @@ builder.Services.AddScoped<IOrcamentoPecaRepository, OrcamentoPecaRepository>();
 
 builder.Services.AddScoped<IMovimentacaoEstoqueRepository, MovimentacaoEstoqueRepository>();
 builder.Services.AddScoped<IMovimentacaoEstoqueService, MovimentacaoEstoqueService>();
+builder.Services.AddScoped<IServiceOrderRepository, ServiceOrderRepository>();
+builder.Services.AddScoped<IServiceOrderService, ServiceOrderService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddControllers();
@@ -97,7 +99,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthorization();
-app.Urls.Add("http://0.0.0.0:80");
-app.MapControllers();
 
+//0.0.0.0 é uma forma de permitir que a aplicação aceite conexões de qualquer IP - por exemplo: Docker, não apenas do localhost, 
+//ou seja, você pode acessar o aplicativo de outras máquinas na mesma rede ou até de fora.
+app.Urls.Add("http://0.0.0.0:80");
+
+app.MapControllers();
 app.Run();

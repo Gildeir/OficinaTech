@@ -20,16 +20,18 @@ namespace OficinaTech.Infrastructure.Repositories
         {
             var result = await _context.Orcamentos
                 .Include(o => o.OrcamentoPecas)
-                .ThenInclude(op => op.Peca).AsNoTracking().ToListAsync();
+                .ThenInclude(op => op.Peca)
+                .AsNoTracking()
+                .ToListAsync();
 
             return result;
-
         }
         public async Task<Orcamento> GetByIdAsync(int id)
         {
             var result = await _context.Orcamentos
                 .Include(o => o.OrcamentoPecas)
-                .ThenInclude(op => op.Peca).AsNoTracking()
+                .ThenInclude(op => op.Peca)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(o => o.Id == id);
 
             return result;

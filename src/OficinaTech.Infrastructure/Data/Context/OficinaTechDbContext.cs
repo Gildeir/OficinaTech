@@ -15,6 +15,7 @@ namespace OficinaTech.Infrastructure.Data.Context
         public DbSet<Peca> Pecas { get; set; }
         public DbSet<OrcamentoPeca> OrcamentoPecas { get; set; }
         public DbSet<MovimentacaoEstoque> MovimentacoesEstoque { get; set; }
+        public DbSet<ServiceOrder> ServiceOrders{ get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -24,6 +25,7 @@ namespace OficinaTech.Infrastructure.Data.Context
             modelBuilder.ApplyConfiguration<Peca>(new PecaConfiguration());
             modelBuilder.ApplyConfiguration<OrcamentoPeca>(new OrcamentoPecaConfiguration());
             modelBuilder.ApplyConfiguration<MovimentacaoEstoque>(new MovimentacaoEstoqueConfiguration());
+            modelBuilder.ApplyConfiguration<ServiceOrder>(new ServiceOrderConfiguration());
 
             modelBuilder.Entity<Peca>().HasData(
                 new Peca { Id = -1, Nome = "Filtro de Óleo", Estoque = 10, Preco = 25.90m },

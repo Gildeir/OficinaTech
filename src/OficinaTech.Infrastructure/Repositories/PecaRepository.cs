@@ -31,7 +31,9 @@ namespace OficinaTech.Infrastructure.Repositories
 
         public async Task<Peca> GetByIdAsync(int id)
         {
-            var result = await _context.Pecas.FirstOrDefaultAsync(x => x.Id == id);
+            var result = await _context.Pecas
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             return result;
         }
