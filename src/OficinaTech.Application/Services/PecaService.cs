@@ -87,7 +87,27 @@ namespace OficinaTech.Application.Services
                 if (peca == null)
                     return Result<bool>.Failure($"Erro ao buscar peça id {pecaId}");
 
+                var orcamentoPeca = await _orcamentoPecaRepository.GetByPecaIdAsync(pecaId);
+
+                foreach (var item in orcamentoPeca)
+                {
+                    if (item.LiberadaParaCompra == false)
+                    {
+                        await _unitOfWork.RollbackAsync();
+                        return Result<bool>.Failure("Peça não está liberada para compra.");
+                    }
+                }
+
                 peca.Estoque += quantidadeReposicao;
+
+                foreach (var item in orcamentoPeca)
+                {
+                    if(item.Quantidade <= item.Peca.Estoque)
+                    {
+                        item.LiberadaParaCompra = false;
+                        item.Status = EEstadoPecaOrcamento.Comprada;
+                    }
+                }
 
                 if (peca.Preco < precoCusto)
                 {

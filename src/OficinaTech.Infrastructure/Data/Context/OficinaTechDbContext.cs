@@ -15,6 +15,7 @@ namespace OficinaTech.Infrastructure.Data.Context
         public DbSet<Peca> Pecas { get; set; }
         public DbSet<OrcamentoPeca> OrcamentoPecas { get; set; }
         public DbSet<MovimentacaoEstoque> MovimentacoesEstoque { get; set; }
+        public DbSet<ServiceOrder> ServiceOrders{ get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

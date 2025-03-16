@@ -11,6 +11,6 @@ namespace OficinaTech.Application.Interfaces
     {
         Task<Result<bool>> AddPecaToOrcamentoAsync(int orcamentoId, int pecaId, int quantidade);
         Task<Result<bool>> UpdatePrecoEmOrcamentos(int pecaId, decimal novoPreco);
-        Task<Result<bool>> UsarPecaNoOrcamento(int orcamentoId, int pecaId);
+        Task<Result<bool>> ExecutarOrdemServicoAsync(int orcamentoId);
     }
 }

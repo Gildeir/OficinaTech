@@ -78,7 +78,7 @@ namespace OficinaTech.API.Controllers
             var result = await _pecaService.ComprarPecaAsync(id, dto.Quantidade, dto.PrecoCusto);
 
             if (!result.IsSuccess)
-                return NotFound("Peça não encontrada.");
+                return BadRequest(result.Error);
 
             return Ok("Compra realizada com sucesso");
         }
@@ -88,7 +88,5 @@ namespace OficinaTech.API.Controllers
         {
             throw new Exception("Erro simulado para testar o middleware!");
         }
-
-
     }
 }

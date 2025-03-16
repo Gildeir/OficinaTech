@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using OficinaTech.Domain.Entities;
 using OficinaTech.Infrastructure.Data.Context;
 using OficinaTech.Infrastructure.Repositories.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -41,9 +42,16 @@ namespace OficinaTech.Infrastructure.Repositories
 
         public async Task<bool> UpdateAsync(OrcamentoPeca orcamentoPeca)
         {
-            _context.OrcamentoPecas.Update(orcamentoPeca);
-
-            return await _context.SaveChangesAsync() > 0;
+            try
+            {
+                _context.OrcamentoPecas.Update(orcamentoPeca);
+                return await _context.SaveChangesAsync() > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao atualizar OrcamentoPeca: {ex.Message}");
+                return false;
+            }
         }
     }
 }
