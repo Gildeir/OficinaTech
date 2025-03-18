@@ -20,6 +20,11 @@ namespace OficinaTech.API.Controllers
             _orcamentoPecaService = orcamentoPecaService;
         }
 
+        /// <summary>
+        /// Get all orcamentos
+        /// </summary>
+        /// <returns>IActionResult new { success = true, data = result.Value }</returns>
+
         [HttpGet]
         public async Task<IActionResult> GetAllOrcamentos()
         {
