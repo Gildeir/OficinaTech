@@ -18,6 +18,11 @@ namespace OficinaTech.API.Controllers
             _pecaService = pecaService;
         }
 
+        /// <summary>
+        /// Get all pecas
+        /// </summary>
+        /// <returns></returns>
+
         [HttpGet]
         public async Task<ActionResult<List<Peca>>> GetAllPecas()
         {
@@ -25,6 +30,12 @@ namespace OficinaTech.API.Controllers
 
             return Ok(result);
         }
+
+        /// <summary>
+        /// Get peca by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Peca>> GetPecaById(int id)
@@ -36,6 +47,13 @@ namespace OficinaTech.API.Controllers
             return Ok(result);
         }
 
+
+        /// <summary>
+        /// Add peca
+        /// </summary>
+        /// <param name="peca"></param>
+        /// <returns></returns>
+
         [HttpPost]
         public async Task<ActionResult> AddPeca([FromBody] Peca peca)
         {
@@ -45,6 +63,13 @@ namespace OficinaTech.API.Controllers
 
             return CreatedAtAction(nameof(GetAllPecas), new { id = peca.Id }, peca);
         }
+
+        /// <summary>
+        /// Update peca
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="peca"></param>
+        /// <returns></returns>
 
         [HttpPut("{id}")]
         public async Task<ActionResult>UpdatePeca(int id, [FromBody] Peca peca)
@@ -59,6 +84,12 @@ namespace OficinaTech.API.Controllers
             return Ok($"{peca.Nome} atualizada com sucesso");
         }
 
+        /// <summary>
+        /// Delete peca
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+
         [HttpDelete("{id}")]
         public async Task<ActionResult>DeletePeca(int id)
         {
@@ -68,6 +99,14 @@ namespace OficinaTech.API.Controllers
             
             return Ok("Peça deletada");
         }
+
+        /// <summary>
+        /// Comprar peça para repor estoque.
+        /// </summary>
+        /// <param name="id">Identificador da peça</param>
+        /// <param name="dto">Objeto contendo a quantidade e o preço de custo da peça</param>
+        /// <returns>Retorna um IActionResult indicando o sucesso ou falha da compra</returns>
+
 
         [HttpPost("{id}/comprar-repor-estoque")]
         public async Task<IActionResult> ComprarPeca(int id, [FromBody] ComprarPecaDto dto)
@@ -82,6 +121,12 @@ namespace OficinaTech.API.Controllers
 
             return Ok("Compra realizada com sucesso");
         }
+
+        /// <summary>
+        /// Testar middleware de erro global
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
 
         [HttpGet("testar-erro")]
         public IActionResult TestarErro()

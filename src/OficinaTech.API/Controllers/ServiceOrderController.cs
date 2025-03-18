@@ -15,6 +15,11 @@ namespace OficinaTech.API.Controllers
             _serviceOrderService = serviceOrderService;
         }
 
+        /// <summary>
+        /// Get all service order
+        /// </summary>
+        /// <returns></returns>
+
         [HttpGet]
         public async Task<IActionResult> GetAllServiceOrder()
         {
